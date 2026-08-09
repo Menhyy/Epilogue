@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(BOREALIS_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/library)
+set(BOREALIS_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/library/borealis/library)
 
 # build options
 include(${BOREALIS_LIBRARY}/cmake/commonOption.cmake)
@@ -49,7 +49,7 @@ if (PLATFORM_DESKTOP)
         endif ()
     endif ()
 elseif (PLATFORM_SWITCH)
-    list(APPEND MAIN_SRC ${CMAKE_SOURCE_DIR}/library/lib/platforms/switch/switch_wrapper.c)
+    list(APPEND MAIN_SRC ${CMAKE_SOURCE_DIR}/library/borealis/library/lib/platforms/switch/switch_wrapper.c)
 endif ()
 
 
