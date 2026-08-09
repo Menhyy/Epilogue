@@ -28,7 +28,7 @@ SettingsTab::SettingsTab()
             dialog->addButton("No", []() {});
             dialog->addButton("Call Luigi", [this, dialog]()
             {
-                setStringConfig("SERVER_IP", "192.168.0.1");
+                setStringConfig("SERVER_IP", "192.196.0.1");
                 ipMain->setValue("192.169.0.1");
                 dialog->dismiss();
             });
