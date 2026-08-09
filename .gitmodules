@@ -4,3 +4,6 @@
 [submodule "library/lib/extern/SDL"]
 	path = library/lib/extern/SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "library/include/borealis"]
+	path = library/include/borealis
+	url = https://github.com/XITRIX/borealis
