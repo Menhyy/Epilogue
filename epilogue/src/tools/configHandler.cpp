@@ -113,6 +113,32 @@ bool toggleBoolConfig(const std::string& optName)
     return true;
 }
 
+bool setStringConfig(const std::string& optName, const std::string& target)
+{
+    std::string res = getConfig(optName, "s");
+    if (res == "JERR")
+    {
+        brls::Logger::error("Failed to get config!!");
+        brls::Application::notify("Error parsing Config JSON! Please check Logs!");
+        return false;
+    }
+    std::string jso;
+    std::ifstream tempFile(epilogue_config_path + epilogue_config_file);
+    std::stringstream buff;
+    buff << tempFile.rdbuf(); jso = buff.str();
+    tempFile.close();
+    json_t *source = json_loads(jso.c_str(), 0, &jerr);
+    json_object_set_new(source, optName.c_str(), json_string(target.c_str()));
+    std::string result;
+    json_unpack(source, "{s:s}", optName.c_str(), &result);
+    brls::Application::notify(result + "\n" + res);
+    std::ofstream newFile(epilogue_config_path + epilogue_config_file);
+    newFile << json_dumps(source, JSON_INDENT(4));
+    newFile.close();
+    json_decref(source);
+    return true;
+}
+
 std::string getConfigAll()
 {
     std::string res;
