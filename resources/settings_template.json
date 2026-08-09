@@ -1,0 +1,10 @@
+{
+    "SERVER_IP": "51.178.29.194",
+    "RESOLVE_SERVER_IP": "164.132.111.120",
+    "ALT_SERVER_IP": "3.135.232.168",
+    "ALT_RES_IP": "164.132.111.120",
+    "AUTO_BACKUP_HOSTS": true,
+    "REMOVE_PATCHES_ON_NSO": false,
+    "PATCH_SYSNAND": false,
+    "egglogue": false
+}

@@ -1,0 +1,96 @@
+<brls:Box
+    width="auto"
+    height="auto">
+
+    <brls:ScrollingFrame
+        width="auto"
+        height="auto"
+        axis="column"
+        alignItems="stretch"
+        scrollingBehavior="centered"
+        grow="1.0" >
+        
+        <brls:Box
+            width="10000"
+            height="auto"
+            axis="column"
+            alignItems="stretch"
+            paddingTop="@style/brls/sidebar/padding_top"
+            paddingRight="@style/brls/sidebar/padding_right"
+            paddingBottom="@style/brls/sidebar/padding_bottom"
+            paddingLeft="@style/brls/sidebar/padding_left">
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Nextendo IP Address"
+                    subtitle="The IP address of the main server."/>
+                
+            <brls:InputCell
+                id="ipMain"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Patch SysNAND"
+                    subtitle="[UNSAFE] Patch your SysNAND with Nextendo."
+                    marginTop="25px"/>
+
+            <brls:BooleanCell
+                    id="patchSys"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Auto Backup Hosts"
+                    subtitle="Make a backup of your hosts file automatically."
+                    marginTop="25px"/>
+
+            <brls:BooleanCell
+                    id="hostBack"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Keep patches on Default"
+                    subtitle="Keep browser patches when switching to Default."
+                    marginTop="25px"/>
+
+            <brls:BooleanCell
+                    id="noPatchDefault"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Resolve Server IP"
+                    subtitle="The IP address of the resolve server."
+                    marginTop="25px"/>
+                
+            <brls:InputCell
+                id="ipRes"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Alternative Server IP Address"
+                    subtitle="The IP address of the alt. server."
+                    marginTop="25px"/>
+
+            <brls:InputCell
+                    id="ipAlt"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Alt. Resolve IP Address"
+                    subtitle="The IP address of the alt. resolve server."
+                    marginTop="25px"/>
+
+            <brls:InputCell
+                    id="ipResAlt"/>
+
+        </brls:Box>
+
+    </brls:ScrollingFrame>
+
+</brls:Box>

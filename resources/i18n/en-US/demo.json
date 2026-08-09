@@ -1,0 +1,25 @@
+{
+    "title": "Epilogue",
+
+    "tabs": {
+        "main": "Main Page",
+        "settings": "Settings",
+        "about": "About Epilogue"
+    },
+
+    "welcome": "Welcome to the borealis demo! Feel free to explore and discover what the library can do.",
+
+    "components": {
+        "buttons_header": "Buttons",
+        "button_primary": "Write Local File",
+        "button_net": "Write File from Network"
+    },
+
+    "about": {
+        "title": "Epilogue",
+        "description": "A simpler, cleaner and more user-friendly frontend for Nextendo services on the Switch.",
+        "github": "Find it on github.com/Menhyy/Epilogue",
+        "licence": "Licensed under GNU GPL v3",
+        "logo_credit": "Logo by @Menhyy"
+    }
+}
