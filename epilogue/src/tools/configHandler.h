@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 bool startHandler();
 std::string getConfig(const std::string& optName, const std::string& optType);

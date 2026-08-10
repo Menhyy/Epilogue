@@ -13,7 +13,7 @@ SettingsTab::SettingsTab()
     {
         toggleBoolConfig("AUTO_BACKUP_HOSTS");
     });
-    noPatchDefault->init("Keep Browser Patches on Default", getConfig("REMOVE_PATCHES_ON_NSO", "b") == "1", [](bool value)
+    noPatchDefault->init("Remove Browser Patches on Default", getConfig("REMOVE_PATCHES_ON_NSO", "b") == "1", [](bool value)
     {
         toggleBoolConfig("REMOVE_PATCHES_ON_NSO");
     });
@@ -25,15 +25,20 @@ SettingsTab::SettingsTab()
     ipMain->init(
         "IP Address", getConfig("SERVER_IP", "s"), [this](const std::string& text) {
             auto dialog = new brls::Dialog("This IP Address is Invalid! Do you want to continue?");
-            dialog->addButton("No", []() {});
+            dialog->addButton("No", [this, dialog]()
+            {
+                const std::string oldvar = getConfig("SERVER_IP", "s");
+                ipMain->setValue(oldvar);
+                dialog->dismiss();
+            });
             dialog->addButton("Call Luigi", [this, dialog]()
             {
                 setStringConfig("SERVER_IP", "192.196.0.1");
                 ipMain->setValue("192.169.0.1");
                 dialog->dismiss();
             });
-            dialog->addButton("Yes", []()
-                { brls::Application::notify("NAH"); });
+            dialog->addButton("Yes", [this]()
+                { setStringConfig("SERVER_IP", ipMain->getValue()); });
             dialog->open();
         },
         getConfig("SERVER_IP", "s"), "The IP Address for the main Nextendo server. We recommend you keep this as-is unless you know what you're doing.");

@@ -6,5 +6,7 @@
     "AUTO_BACKUP_HOSTS": true,
     "REMOVE_PATCHES_ON_NSO": false,
     "PATCH_SYSNAND": false,
+    "SHUT_UP_BACKUPS": false,
+    "SHUT_UP_WARNINGS": false,
     "egglogue": false
 }

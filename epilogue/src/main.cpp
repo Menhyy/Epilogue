@@ -1,11 +1,18 @@
+#include <jansson.h>
+
 #include <borealis.hpp>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 
 #include "activity/main_activity.hpp"
 #include "tab/epilogue_main.hpp"
 #include "tab/settings_tab.hpp"
 #include "tools/configHandler.h"
+#include "tools/fsHandler.h"
+#include "tools/netTasksHandler.h"
+
+static json_error_t jerr;
 
 using namespace brls::literals; // for _i18n
 
@@ -52,10 +59,29 @@ int main(const int argc, char* argv[])
     brls::getStyle().addMetric("about/padding_sides", 75);
     brls::getStyle().addMetric("about/description_margin", 50);
 
+
     // Create and push the main activity to the stack
     brls::Application::pushActivity(new MainActivity());
 
     startHandler();
+
+    //Update handling... WIP... stop being lazy...
+    const std::string githubFetch = readFileNet("https://api.github.com/", "repos/Menhyy/Epilogue/releases/latest");
+    if (githubFetch != "CURL_ERR")
+    {
+        char* updateNumber = nullptr;
+        json_t* jshit = json_loads(githubFetch.c_str(), 0, &jerr);
+        if (const int ret = json_unpack(jshit, "{s:s}", "tag_name", updateNumber); ret != 0 || updateNumber == nullptr)
+        {
+            brls::Logger::warning("Failed to get version info.");
+            brls::Application::notify("Failed to get version info!");
+        }else
+        {
+            brls::Application::notify(updateNumber);
+            
+        }
+        json_decref(jshit);
+    }
 
     // Run the app
     while (brls::Application::mainLoop())

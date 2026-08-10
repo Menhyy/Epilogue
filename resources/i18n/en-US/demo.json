@@ -11,8 +11,8 @@
 
     "components": {
         "buttons_header": "Buttons",
-        "button_primary": "Write Local File",
-        "button_net": "Write File from Network"
+        "button_primary": "Apply Nextendo Patches",
+        "button_net": "Revert to Defaults"
     },
 
     "about": {

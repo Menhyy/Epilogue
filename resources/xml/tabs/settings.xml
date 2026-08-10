@@ -52,8 +52,8 @@
             <brls:Header
                     width="auto"
                     height="auto"
-                    title="Keep patches on Default"
-                    subtitle="Keep browser patches when switching to Default."
+                    title="Remove patches on Default"
+                    subtitle="Remove browser patches when switching to Default."
                     marginTop="25px"/>
 
             <brls:BooleanCell
