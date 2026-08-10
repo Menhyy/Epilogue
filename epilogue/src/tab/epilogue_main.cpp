@@ -43,7 +43,7 @@ static void backupHosts(const bool sys)
         }else
         {
             if (const std::string sysBak = readTextFile("sdmc:/atmosphere/hosts/sysmmc.txt");
-            !writeFile(sysBak, "sdmc:/switch/Epilogue/backup/sysmmc.bak"))
+            !writeTextFile(sysBak, "sdmc:/switch/Epilogue/backup/sysmmc.bak"))
             {
                 brls::Logger::error("Failed to back up SysNAND hosts file!");
                 brls::Application::notify("Failed to back up SysNAND hosts.\nPlease check logs!");
@@ -64,7 +64,7 @@ static void backupHosts(const bool sys)
     }else
     {
         if (const std::string emuBak = readTextFile("sdmc:/atmosphere/hosts/emummc.txt");
-    !writeFile(emuBak, "sdmc:/switch/Epilogue/backup/emummc.bak"))
+    !writeTextFile(emuBak, "sdmc:/switch/Epilogue/backup/emummc.bak"))
         {
             brls::Logger::error("Failed to back up EmuNAND hosts file!");
             brls::Application::notify("Failed to back up EmuNAND hosts.\nPlease check logs!");
@@ -80,13 +80,13 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
 {
     if (patchSys)
     {
-        if (!writeFile(hostsContent, "sdmc:/atmosphere/hosts/sysmmc.txt"))
+        if (!writeTextFile(hostsContent, "sdmc:/atmosphere/hosts/sysmmc.txt"))
         {
             brls::Logger::error("Failed to write SysMMC hosts!!!!");
             fs::remove("sdmc:/atmosphere/hosts/sysmmc.txt");
             if (fs::exists("sdmc:/switch/Epilogue/backup/sysmmc.bak"))
             {
-                writeFile(readTextFile("sdmc:/switch/Epilogue/backup/sysmmc.bak"),
+                writeTextFile(readTextFile("sdmc:/switch/Epilogue/backup/sysmmc.bak"),
                     "sdmc:/atmosphere/hosts/sysmmc.txt");
                 brls::Logger::warning("We had to restore a backup!");
             }
@@ -94,13 +94,13 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
             dialog->addButton("Ok", [](){}); dialog->open(); return false;
         }
     }
-    if (!writeFile(hostsContent, "sdmc:/atmosphere/hosts/emummc.txt"))
+    if (!writeTextFile(hostsContent, "sdmc:/atmosphere/hosts/emummc.txt"))
     {
         brls::Logger::error("Failed to write EmuMMC hosts!!!!");
         fs::remove("sdmc:/atmosphere/hosts/emummc.txt");
         if (fs::exists("sdmc:/switch/Epilogue/backup/emummc.bak"))
         {
-            writeFile(readTextFile("sdmc:/switch/Epilogue/backup/emummc.bak"),
+            writeTextFile(readTextFile("sdmc:/switch/Epilogue/backup/emummc.bak"),
                 "sdmc:/atmosphere/hosts/emummc.txt");
             brls::Logger::warning("We had to restore a backup!");
         }
@@ -109,7 +109,7 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
     }
     if (!fs::exists("sdmc:/exosphere.ini"))
     {
-        if (!writeFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
+        if (!writeTextFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
         {
             brls::Logger::error("Could not make new exosphere.ini file.");
             const auto dialog = new brls::Dialog("Failed to create exosphere file! ProdInfo will be untouched and possibly won't be blanked on EmuNAND!!");
@@ -121,7 +121,7 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
         const std::string newStringE = stringReplace(readTextFile("sdmc:/exosphere.ini"),
             "blank_prodinfo_emummc=1",
             "blank_prodinfo_emummc=0");
-        if (!writeFile(newStringE ,"sdmc:/exosphere.ini"))
+        if (!writeTextFile(newStringE ,"sdmc:/exosphere.ini"))
         {
             brls::Logger::error("Could not edit exosphere.ini file.");
             const auto dialog = new brls::Dialog("Failed to edit exosphere file! ProdInfo possibly won't be blanked on EmuNAND!!");
@@ -130,7 +130,7 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
     }
     if (!fs::exists("sdmc:/atmosphere/config/system_settings.ini"))
     {
-        if (!writeFile("[atmosphere]\nenable_dns_mitm = u8!0x1\nadd_defaults_to_dns_hosts = u8!0x1", "sdmc:/atmosphere/config/system_settings.ini"))
+        if (!writeTextFile("[atmosphere]\nenable_dns_mitm = u8!0x1\nadd_defaults_to_dns_hosts = u8!0x1", "sdmc:/atmosphere/config/system_settings.ini"))
         {
             brls::Logger::error("Could not make new system_settings file.");
             const auto dialog = new brls::Dialog("Failed to create atmosphere settings file! Host files will not work properly!");
@@ -144,7 +144,7 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
             "enable_dns_mitm = u8!0x1");
         newStringA = stringReplace(newStringA, "add_defaults_to_dns_hosts = u8!0x0",
             "add_defaults_to_dns_hosts = u8!0x1");
-        if (!writeFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
+        if (!writeTextFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
         {
             brls::Logger::error("Could not edit system_settings.ini file.");
             const auto dialog = new brls::Dialog("Failed to edit atmosphere settings file! Hosts file probably won't work properly!");
@@ -166,16 +166,16 @@ static bool applyNextendo()
     // Check, find and read the hosts file boilerplate;
     // Check filesystem first, as it'll have the hosts file downloaded from the internet.
     // If it doesn't exist, use the RomFS template, which is bundled with Epilogue but may not be updated.
-    if (fs::exists("sdmc:/switch/Epilogue/nxhosts_local.txt"))
+    if (fs::exists("switch/Epilogue/nxhosts_local.txt"))
     {
-        if ((hostsBoilContent = readTextFile("sdmc:/switch/Epilogue/nxhosts_local.txt")) == "ERR")
+        if ((hostsBoilContent = readTextFile("switch/Epilogue/nxhosts_local.txt")) == "ERR")
             brls::Logger::error("Could not read local hosts file!!!");
 
-        hostsBoilContent = readTextFile("romfs:/nextendo/nxhosts_bundled.txt");
-        writeFile(hostsBoilContent, "sdmc:/switch/Epilogue/nxhosts_local.txt");
+        hostsBoilContent = readTextFile("resources/nextendo/nxhosts_bundled.txt");
+        writeTextFile(hostsBoilContent, "switch/Epilogue/nxhosts_local.txt");
     }else
     {
-        hostsBoilContent = readTextFile("romfs:/nextendo/nxhosts_bundled.txt");
+        hostsBoilContent = readTextFile("resources/nextendo/nxhosts_bundled.txt");
         if (hostsBoilContent == "ERR")
         {
             brls::Application::notify(hostsBoilContent);
@@ -192,12 +192,12 @@ static bool applyNextendo()
         );
 
     //Check for browser patches, if don't exist, apply.
-    if (!fs::exists("sdmc:/atmosphere/exefs_patches/disable_ca_verification"))
+    if (!fs::is_directory("atmosphere/exefs_patches/disable_ca_verification"))
     {
         brls::Logger::info("Applying browser patches...");
         try
         {
-            fs::copy("romfs:/nextendo/patches/atmosphere", "sdmc:/atmosphere",fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+            copyFolderRecursive("resources/nextendo/patches/atmosphere", "atmosphere/");
         }catch (const fs::filesystem_error& e)
         {
             brls::Logger::error("Failed to copy browser patches: " + std::string(e.what()));
@@ -206,6 +206,9 @@ static bool applyNextendo()
             dialog->open();
             return false;
         }
+    }else
+    {
+        brls::Logger::info("NOT applying browser patches...");
     }
 
     if (getConfig("AUTO_BACKUP_HOSTS", "b") != "1" && (getConfig("SHUT_UP_BACKUPS", "b") != "1"))
@@ -263,7 +266,7 @@ static bool applyDefaults()
 
     if (emuBackup)
     {
-        writeFile(readTextFile("sdmc:/switch/Epilogue/backup/emummc.bak"),
+        writeTextFile(readTextFile("sdmc:/switch/Epilogue/backup/emummc.bak"),
                 "sdmc:/atmosphere/hosts/emummc.txt");
         brls::Logger::warning("EmuMMC backup restored!");
         brls::Application::notify("Restored EmuNAND hosts file backup.");
@@ -276,7 +279,7 @@ static bool applyDefaults()
 
     if (sysBackup)
     {
-        writeFile(readTextFile("sdmc:/switch/Epilogue/backup/sysmmc.bak"),
+        writeTextFile(readTextFile("sdmc:/switch/Epilogue/backup/sysmmc.bak"),
                 "sdmc:/atmosphere/hosts/sysmmc.txt");
         brls::Logger::warning("SysMMC backup restored!");
         brls::Application::notify("Restored SysNAND hosts file backup.");
@@ -293,7 +296,7 @@ static bool applyDefaults()
         catch (const fs::filesystem_error& e)
         {
             brls::Logger::error("Failed to delete browser patches: " + std::string(e.what()));
-            const auto dialog = new brls::Dialog("Failed to remove Browser Patches. Please remove them manually if possible.");
+            const auto dialog = new brls::Dialog("Failed to remove Browser Patches. Please remove them manually if possible.\n" + std::string(e.what()));
             dialog->addButton("Ok", [](){}); dialog->open();
         }
         try{ fs::remove_all("sdmc:/atmosphere/exefs_patches/disable_ca_verification"); }
@@ -314,7 +317,7 @@ static bool applyDefaults()
 
     if (!fs::exists("sdmc:/exosphere.ini"))
     {
-        if (!writeFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
+        if (!writeTextFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
         {
             brls::Logger::error("Could not make new exosphere.ini file.");
             const auto dialog = new brls::Dialog("Failed to create exosphere file! ProdInfo will be untouched and possibly won't be blanked on EmuNAND!!");
@@ -326,7 +329,7 @@ static bool applyDefaults()
         const std::string newStringE = stringReplace(readTextFile("sdmc:/exosphere.ini"),
             "blank_prodinfo_emummc=1",
             "blank_prodinfo_emummc=0");
-        if (!writeFile(newStringE ,"sdmc:/exosphere.ini"))
+        if (!writeTextFile(newStringE ,"sdmc:/exosphere.ini"))
         {
             brls::Logger::error("Could not edit exosphere.ini file.");
             const auto dialog = new brls::Dialog("Failed to edit exosphere file! ProdInfo possibly won't be blanked on EmuNAND!!");
@@ -335,7 +338,7 @@ static bool applyDefaults()
     }
     if (!fs::exists("sdmc:/atmosphere/config/system_settings.ini"))
     {
-        if (!writeFile("[atmosphere]\nenable_dns_mitm = u8!0x1\nadd_defaults_to_dns_hosts = u8!0x0", "sdmc:/atmosphere/config/system_settings.ini"))
+        if (!writeTextFile("[atmosphere]\nenable_dns_mitm = u8!0x1\nadd_defaults_to_dns_hosts = u8!0x0", "sdmc:/atmosphere/config/system_settings.ini"))
         {
             brls::Logger::error("Could not make new system_settings file.");
             const auto dialog = new brls::Dialog("Failed to create atmosphere settings file! Host files will not work properly!");
@@ -345,7 +348,7 @@ static bool applyDefaults()
     {
         const std::string newStringA = stringReplace(readTextFile("sdmc:/atmosphere/config/system_settings.ini"), "add_defaults_to_dns_hosts = u8!0x0",
             "add_defaults_to_dns_hosts = u8!0x1");
-        if (!writeFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
+        if (!writeTextFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
         {
             brls::Logger::error("Could not edit system_settings.ini file.");
             const auto dialog = new brls::Dialog("Failed to edit atmosphere settings file! Hosts file probably won't work properly!");
