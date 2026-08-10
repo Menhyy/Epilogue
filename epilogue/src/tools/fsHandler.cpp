@@ -62,6 +62,17 @@ void copyFolderRecursive(const std::string& srcPath, const std::string& destPath
     }
 }
 
+void deleteFolderRecursive(const std::string& srcPath)
+{
+    for (auto& i: fs::directory_iterator(srcPath))
+    {
+        const fs::path& iPath = i.path();
+
+        if (fs::is_directory(iPath)) deleteFolderRecursive(iPath);
+        else fs::remove(iPath);
+    }
+}
+
 std::string readTextFile(const std::string& filePath)
 {
     std::ostringstream buffer;

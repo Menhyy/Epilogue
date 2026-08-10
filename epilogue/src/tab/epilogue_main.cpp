@@ -166,16 +166,16 @@ static bool applyNextendo()
     // Check, find and read the hosts file boilerplate;
     // Check filesystem first, as it'll have the hosts file downloaded from the internet.
     // If it doesn't exist, use the RomFS template, which is bundled with Epilogue but may not be updated.
-    if (fs::exists("switch/Epilogue/nxhosts_local.txt"))
+    if (fs::exists("sdmc:/switch/Epilogue/nxhosts_local.txt"))
     {
-        if ((hostsBoilContent = readTextFile("switch/Epilogue/nxhosts_local.txt")) == "ERR")
+        if ((hostsBoilContent = readTextFile("sdmc:/switch/Epilogue/nxhosts_local.txt")) == "ERR")
             brls::Logger::error("Could not read local hosts file!!!");
 
-        hostsBoilContent = readTextFile("resources/nextendo/nxhosts_bundled.txt");
-        writeTextFile(hostsBoilContent, "switch/Epilogue/nxhosts_local.txt");
+        hostsBoilContent = readTextFile("romfs:/nextendo/nxhosts_bundled.txt");
+        writeTextFile(hostsBoilContent, "sdmc:/switch/Epilogue/nxhosts_local.txt");
     }else
     {
-        hostsBoilContent = readTextFile("resources/nextendo/nxhosts_bundled.txt");
+        hostsBoilContent = readTextFile("romfs:/nextendo/nxhosts_bundled.txt");
         if (hostsBoilContent == "ERR")
         {
             brls::Application::notify(hostsBoilContent);
@@ -192,12 +192,12 @@ static bool applyNextendo()
         );
 
     //Check for browser patches, if don't exist, apply.
-    if (!fs::is_directory("atmosphere/exefs_patches/disable_ca_verification"))
+    if (!fs::is_directory("sdmc:/atmosphere/exefs_patches/disable_ca_verification"))
     {
         brls::Logger::info("Applying browser patches...");
         try
         {
-            copyFolderRecursive("resources/nextendo/patches/atmosphere", "atmosphere/");
+            copyFolderRecursive("romfs:/nextendo/patches/atmosphere", "sdmc:/atmosphere/");
         }catch (const fs::filesystem_error& e)
         {
             brls::Logger::error("Failed to copy browser patches: " + std::string(e.what()));
@@ -272,7 +272,7 @@ static bool applyDefaults()
         brls::Application::notify("Restored EmuNAND hosts file backup.");
     }else
     {
-        fs::remove_all("sdmc:/atmosphere/hosts/emummc.txt");
+        fs::remove("sdmc:/atmosphere/hosts/emummc.txt");
         brls::Logger::warning("EmuMMC hosts file deleted!");
         brls::Application::notify("Deleted EmuNAND hosts file.");
     }
@@ -296,7 +296,7 @@ static bool applyDefaults()
         catch (const fs::filesystem_error& e)
         {
             brls::Logger::error("Failed to delete browser patches: " + std::string(e.what()));
-            const auto dialog = new brls::Dialog("Failed to remove Browser Patches. Please remove them manually if possible.\n" + std::string(e.what()));
+            const auto dialog = new brls::Dialog("Failed to remove Browser Patches. Please remove them manually if possible.");
             dialog->addButton("Ok", [](){}); dialog->open();
         }
         try{ fs::remove_all("sdmc:/atmosphere/exefs_patches/disable_ca_verification"); }
