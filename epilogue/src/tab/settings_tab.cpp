@@ -22,6 +22,13 @@ SettingsTab::SettingsTab()
         toggleBoolConfig("PATCH_SYSNAND");
     });
 
+    debugMode->init("Debug Mode", brls::Application::isDebuggingViewEnabled(), [](bool value){
+        brls::Application::enableDebuggingView(value);
+        brls::sync([value](){
+            brls::Logger::info("Debug mode {}", value ? "enabled!" : "disabled.");
+        });
+    });
+
     ipMain->init(
         "IP Address", getConfig("SERVER_IP", "s"), [this](const std::string& text) {
             auto dialog = new brls::Dialog("This IP Address is Invalid! Do you want to continue?");

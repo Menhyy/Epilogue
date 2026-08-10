@@ -66,9 +66,7 @@ void deleteFolderRecursive(const std::string& srcPath)
 {
     for (auto& i: fs::directory_iterator(srcPath))
     {
-        const fs::path& iPath = i.path();
-
-        if (fs::is_directory(iPath)) deleteFolderRecursive(iPath);
+        if (const fs::path& iPath = i.path(); fs::is_directory(iPath)) deleteFolderRecursive(iPath);
         else fs::remove(iPath);
     }
 }

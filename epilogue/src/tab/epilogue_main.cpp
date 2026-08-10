@@ -245,6 +245,7 @@ static bool applyDefaults()
 {
     bool emuBackup = false;
     bool sysBackup = false;
+    const bool patchSys = (getConfig("PATCH_SYSNAND", "b") == "1");
     const bool deletePatches = (getConfig("REMOVE_PATCHES_ON_NSO", "b") == "1");
     if (!fs::exists("sdmc:/switch/Epilogue/backup"))
     {
@@ -277,13 +278,13 @@ static bool applyDefaults()
         brls::Application::notify("Deleted EmuNAND hosts file.");
     }
 
-    if (sysBackup)
+    if (sysBackup && !patchSys)
     {
         writeTextFile(readTextFile("sdmc:/switch/Epilogue/backup/sysmmc.bak"),
                 "sdmc:/atmosphere/hosts/sysmmc.txt");
         brls::Logger::warning("SysMMC backup restored!");
         brls::Application::notify("Restored SysNAND hosts file backup.");
-    }else
+    }else if (!patchSys)
     {
         fs::remove_all("sdmc:/atmosphere/hosts/sysmmc.txt");
         brls::Logger::warning("SysMMC hosts file deleted!");
@@ -421,13 +422,8 @@ bool EpilogueMain::onNextendoButtonClicked(brls::View* view)
         const bool emue = fs::exists("sdmc:/atmosphere/hosts/emummc.txt");
         bool doWeHaveNextendoAlready = false;
 
-        if (syse)
-        {
-            if (const std::string sysm = readTextFile("sdmc:/atmosphere/hosts/sysmmc.txt"); isThisNextendo(sysm)) doWeHaveNextendoAlready = true;
-        }else if (emue)
-        {
-            if (const std::string emum = readTextFile("sdmc:/atmosphere/hosts/emummc.txt"); isThisNextendo(emum)) doWeHaveNextendoAlready = true;
-        }
+        if (syse){ if (const std::string sysm = readTextFile("sdmc:/atmosphere/hosts/sysmmc.txt"); isThisNextendo(sysm)) doWeHaveNextendoAlready = true; }
+        else if (emue) { if (const std::string emum = readTextFile("sdmc:/atmosphere/hosts/emummc.txt"); isThisNextendo(emum)) doWeHaveNextendoAlready = true; }
 
         if (doWeHaveNextendoAlready)
         {
@@ -444,6 +440,9 @@ bool EpilogueMain::onNextendoButtonClicked(brls::View* view)
                 return false;
             });
             nextendoDiag->open();
+        }else
+        {
+            spawnConfirmPoupup();
         }
     }else
     {

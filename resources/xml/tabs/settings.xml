@@ -89,6 +89,16 @@
             <brls:InputCell
                     id="ipResAlt"/>
 
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="Debug Mode"
+                    subtitle="Enable a Debug Overlay that shows you logs in real time."
+                    marginTop="25px"/>
+
+            <brls:BooleanCell
+                    id="debugMode"/>
+
         </brls:Box>
 
     </brls:ScrollingFrame>
