@@ -241,11 +241,34 @@ static bool applyNextendo()
     return true;
 }
 
-static bool applyS2Bcat()
+static bool handleS2Bcat(const bool remove)
 {
-    writeFileNet(getConfig("BCAT_IP", "s"), "/api/bcat/01003BC0000A0000", "switch/Epilogue/test.zip");
-    unZipFile("switch/Epilogue/test.zip", "switch/Epilogue/NetDecompress");
-    brls::Logger::info("Hello!");
+    const std::string s2folder = "atmosphere/contents/01003BC0000A0000/romfs";
+    if (remove)
+    {
+        deleteFolderRecursive(s2folder + "/DebugUnderPilot/bcat");
+        deleteFolderRecursive(s2folder + "/System");
+        return true;
+    }
+    //Download and Extract BCAT file!!! Or error tf out if we can't.
+    if (!writeFileNet(getConfig("BCAT_IP", "s"), "/api/bcat/01003BC0000A0000", "switch/Epilogue/temp/tmpzip.zip"))
+    {
+        brls::Logger::error("Failed to get BCAT file from network!");
+        return false;
+    }
+    if (!unZipFile("switch/Epilogue/temp/tmpzip.zip", "switch/Epilogue/temp/bcatextract"))
+    {
+        brls::Logger::error("Failed to extract BCAT file!");
+        return false;
+    }
+    if (!copyFile("resources/nextendo/bcatdata/System/GameConfigSetting.xml", s2folder + "/System/GameConfigSetting.xml"))
+    {
+        brls::Logger::error("Failed to copy System file!");
+        return false;
+    }
+    copyFolderRecursive("switch/Epilogue/temp/bcatextract", s2folder + "/DebugUnderPilot/bcat");
+    deleteFolderRecursive("switch/Epilogue/temp");
+    brls::Logger::info("Successfuly applied S2 BCAT Patches!");
     return true;
 }
 
@@ -463,7 +486,7 @@ bool EpilogueMain::onNextendoButtonClicked(brls::View* view)
 
 bool EpilogueMain::onPlaceholderButtonClicked(brls::View* view)
 {
-    applyS2Bcat();
+    handleS2Bcat(false);
     return true;
 }
 

@@ -35,6 +35,9 @@ bool writeTextFile(const std::string& contents, const std::string& savePath)
 
 bool copyFile(const std::string& srcPath, const std::string& savePath)
 {
+    if (fs::path parsedPath = savePath; !parsedPath.parent_path().empty())
+        fs::create_directories(parsedPath.parent_path());
+
     std::ifstream srcFile(srcPath);
     std::ofstream newFile(savePath);
     if (!newFile || !srcFile)
@@ -92,7 +95,7 @@ bool unZipFile(const std::string& zipFile, const std::string& destPath)
         else
         {
             if (fs::path parsePath = fPath; !parsePath.parent_path().empty()) fs::create_directories(parsePath.parent_path());
-            
+
             if (unzOpenCurrentFile(zFile) != UNZ_OK) {
                 brls::Logger::error("Failed to read ZIP Inner File! File: {}", zipFile); unzClose(zFile); return false;
             } std::ofstream OutFile(fPath);

@@ -7,8 +7,10 @@
 #include <sstream>
 #include "netTasksHandler.h"
 #include <borealis.hpp>
+#include <filesystem>
 
 using namespace std;
+namespace fs = std::filesystem;
 
 static size_t write_data(const char *ptr, const size_t size, const size_t nmemb, void *userdata) {
     auto *stream = static_cast<std::ostringstream*>(userdata);
@@ -17,13 +19,16 @@ static size_t write_data(const char *ptr, const size_t size, const size_t nmemb,
     return count;
 }
 
-std::string writeFileNet(const string& URL, const string& filePath, const string& savePath)
+bool writeFileNet(const string& URL, const string& filePath, const string& savePath)
 {
     ostringstream buffer;
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
     if (CURL* net = curl_easy_init())
     {
+        if (const fs::path parsedPath = savePath; !parsedPath.parent_path().empty())
+            fs::create_directories(parsedPath.parent_path());
+
         FILE* TestFile = fopen(savePath.c_str(), "wb"); //Because we need to use fopen instead of ofstreams...
         if (!TestFile)
         {
@@ -43,15 +48,15 @@ std::string writeFileNet(const string& URL, const string& filePath, const string
             remove(savePath.c_str());
             brls::Application::notify("Failed to fetch file from network.\nPlease check logs!");
             brls::Logger::error(curl_easy_strerror(res));
-            return "CURL_ERR";
+            return false;
         }
     }else
     {
         brls::Logger::error("CURL could not initialize.");
         brls::Application::notify("Failed to fetch file from network.\nPlease check logs!");
-        return "CURL_ERR";
+        return false;
     }
-    return "OK";
+    return true;
 }
 
 std::string readFileNet(const string& URL, const string& filePath)
