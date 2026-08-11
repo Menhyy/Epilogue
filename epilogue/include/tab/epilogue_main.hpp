@@ -12,4 +12,5 @@ class EpilogueMain : public brls::Box
   private:
     static bool onNextendoButtonClicked(brls::View* view);
     static bool onDefaultButtonClicked(brls::View* view);
+    static bool onPlaceholderButtonClicked(brls::View* view);
 };

@@ -47,6 +47,15 @@
                             marginRight="30px"
                             text="@i18n/demo/components/button_net" />
 
+                    <brls:Button
+                            id="button_placeholder"
+                            width="auto"
+                            height="auto"
+                            style="primary"
+                            grow="1.0"
+                            marginRight="30px"
+                            text="placeyholdery" />
+
                 </brls:Box>
 
         </brls:Box>

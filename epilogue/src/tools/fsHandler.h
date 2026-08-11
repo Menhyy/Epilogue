@@ -5,4 +5,5 @@ std::string stringReplace(std::string contents, const std::string& replaced, con
 void copyFolderRecursive(const std::string& srcPath, const std::string& destPath);
 bool copyFile(const std::string& srcPath, const std::string& savePath);
 void deleteFolderRecursive(const std::string& srcPath);
+bool unZipFile(const std::string& zipFile, const std::string& destPath);
 

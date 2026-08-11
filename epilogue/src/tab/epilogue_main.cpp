@@ -17,6 +17,7 @@ EpilogueMain::EpilogueMain()
     // Bind the button click to a method using the macro (just for the sake of showcasing it, it's overkill in this situation)
     BRLS_REGISTER_CLICK_BY_ID("button_primary", this->onNextendoButtonClicked);
     BRLS_REGISTER_CLICK_BY_ID("button_net", this->onDefaultButtonClicked);
+    BRLS_REGISTER_CLICK_BY_ID("button_placeholder", this->onPlaceholderButtonClicked);
 }
 
 static bool isThisNextendo(const std::string& contents)
@@ -240,6 +241,14 @@ static bool applyNextendo()
     return true;
 }
 
+static bool applyS2Bcat()
+{
+    writeFileNet(getConfig("BCAT_IP", "s"), "/api/bcat/01003BC0000A0000", "switch/Epilogue/test.zip");
+    unZipFile("switch/Epilogue/test.zip", "switch/Epilogue/NetDecompress");
+    brls::Logger::info("Hello!");
+    return true;
+}
+
 // Remove Nextendo patches and go back to default.
 static bool applyDefaults()
 {
@@ -449,6 +458,12 @@ bool EpilogueMain::onNextendoButtonClicked(brls::View* view)
         brls::Application::notify("Patching!");
         applyNextendo();
     }
+    return true;
+}
+
+bool EpilogueMain::onPlaceholderButtonClicked(brls::View* view)
+{
+    applyS2Bcat();
     return true;
 }
 

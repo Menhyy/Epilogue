@@ -65,6 +65,16 @@
                     title="Resolve Server IP"
                     subtitle="The IP address of the resolve server."
                     marginTop="25px"/>
+
+            <brls:InputCell
+                    id="ipBCAT"/>
+
+            <brls:Header
+                    width="auto"
+                    height="auto"
+                    title="BCAT Download Addr."
+                    subtitle="The IP address of the BCAT download server."
+                    marginTop="25px"/>
                 
             <brls:InputCell
                 id="ipRes"/>

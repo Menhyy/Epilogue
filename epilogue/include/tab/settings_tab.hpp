@@ -15,6 +15,7 @@ class SettingsTab : public brls::Box
     BRLS_BIND(brls::BooleanCell, noPatchDefault, "noPatchDefault");
     BRLS_BIND(brls::BooleanCell, patchSys, "patchSys");
     BRLS_BIND(brls::BooleanCell, debugMode, "debugMode");
+    BRLS_BIND(brls::InputCell, ipBCAT, "ipBCAT");
 
     static brls::View* create();
 };

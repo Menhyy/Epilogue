@@ -1,5 +1,6 @@
 {
     "SERVER_IP": "51.178.29.194",
+    "BCAT_IP": "https://nextendo.network",
     "RESOLVE_SERVER_IP": "164.132.111.120",
     "ALT_SERVER_IP": "3.135.232.168",
     "ALT_RES_IP": "164.132.111.120",

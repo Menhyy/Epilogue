@@ -8,6 +8,7 @@
 #include "fsHandler.h"
 #include <borealis.hpp>
 #include <filesystem>
+#include <minizip/unzip.h>
 
 namespace fs = std::filesystem;
 
@@ -60,6 +61,68 @@ void copyFolderRecursive(const std::string& srcPath, const std::string& destPath
         if (fs::is_directory(iPath)) copyFolderRecursive(iPath, dPath);
         else copyFile(iPath, dPath);
     }
+}
+
+//I WOULD RATHER DIE THAN MESS WITH ZIP FILES AGAIN.
+bool unZipFile(const std::string& zipFile, const std::string& destPath)
+{
+    unzFile zFile = unzOpen(zipFile.c_str());
+    if (!zFile)
+    {
+        brls::Logger::error("Failed to open {}!", zipFile); return false;
+    }
+    unz_global_info glob_info;
+    if (unzGetGlobalInfo(zFile, &glob_info) != UNZ_OK)
+    {
+        brls::Logger::error("Failed to read global info from {}!", zipFile); unzClose(zFile); return false;
+    }
+    if (!fs::is_directory(destPath)) fs::create_directories(destPath);
+
+    for (ulong i = 0; i < glob_info.number_entry; i++)
+    {
+        char fName[256]; unz_file_info fInfo;
+        if (unzGetCurrentFileInfo(zFile, &fInfo, fName, sizeof(fName), nullptr, 0, nullptr, 0))
+        {
+            brls::Logger::error("Failed to read ZIP Inner File! File: {}", zipFile); unzClose(zFile); return false;
+        }
+        if (std::string fPath = destPath + "/" + fName; fPath.back() == '/')
+        {
+            fs::create_directory(fPath); brls::Logger::info("Creating folder {} for zip.", fPath);
+        }
+        else
+        {
+            if (fs::path parsePath = fPath; !parsePath.parent_path().empty()) fs::create_directories(parsePath.parent_path());
+            
+            if (unzOpenCurrentFile(zFile) != UNZ_OK) {
+                brls::Logger::error("Failed to read ZIP Inner File! File: {}", zipFile); unzClose(zFile); return false;
+            } std::ofstream OutFile(fPath);
+            if (!OutFile.is_open())
+            {
+                brls::Logger::error("Failed to create output file! File: {}", fPath);
+                unzCloseCurrentFile(zFile); unzClose(zFile); return false;
+            }
+            std::vector<char> buffer(8192); int read = 0;
+            do
+            {
+                read = unzReadCurrentFile(zFile, buffer.data(), buffer.size());
+                if (read < 0)
+                {
+                    brls::Logger::error("We are SOMEHOW writing stuff backwards!!!! File: {}", fPath);
+                    OutFile.close(); unzCloseCurrentFile(zFile); unzClose(zFile); return false;
+                }
+                if (read > 0) OutFile << buffer.data();
+            } while (read > 0);
+            OutFile.close(); unzCloseCurrentFile(zFile);
+        }
+        if (i + 1 < glob_info.number_entry)
+        {
+            if (unzGoToNextFile(zFile) != UNZ_OK) {
+                brls::Logger::error("Failed to read next file in ZIP!", zipFile); unzClose(zFile); return false;
+            }
+        }
+    }
+    unzClose(zFile);
+    return true;
 }
 
 void deleteFolderRecursive(const std::string& srcPath)
