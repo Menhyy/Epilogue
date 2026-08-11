@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 std::string stringReplace(std::string contents, const std::string& replaced, const std::string& replacement)
 {
     const size_t spos = contents.find(replaced);
-    if (spos == std::string::npos) return "";
+    if (spos == std::string::npos) return contents;
     return contents.replace(spos, replaced.length(), replacement);
 }
 

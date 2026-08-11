@@ -108,6 +108,7 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
         const auto dialog = new brls::Dialog("Failed to apply Nextendo EmuMMC hosts file.\nThe previous host file was restored, and if there wasn't a previous, all host files were removed.");
         dialog->addButton("Ok", [](){}); dialog->open(); return false;
     }
+
     if (!fs::exists("sdmc:/exosphere.ini"))
     {
         if (!writeTextFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
@@ -116,17 +117,27 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
             const auto dialog = new brls::Dialog("Failed to create exosphere file! ProdInfo will be untouched and possibly won't be blanked on EmuNAND!!");
             dialog->addButton("Ok", [](){}); dialog->open(); return false;
         }
-
     }else
     {
-        const std::string newStringE = stringReplace(readTextFile("sdmc:/exosphere.ini"),
+        if (const std::string originalFileE = readTextFile("sdmc:/exosphere.ini"); originalFileE.empty())
+        {
+            if (!writeTextFile("[exosphere]\nblank_prodinfo_emummc=0", "sdmc:/exosphere.ini"))
+            {
+                brls::Logger::error("Could not make new exosphere.ini file.");
+                const auto dialog = new brls::Dialog("Failed to create exosphere file! ProdInfo will be untouched and possibly won't be blanked on EmuNAND!!");
+                dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            }
+        }else
+        {
+            const std::string newStringE = stringReplace(originalFileE,
             "blank_prodinfo_emummc=1",
             "blank_prodinfo_emummc=0");
-        if (!writeTextFile(newStringE ,"sdmc:/exosphere.ini"))
-        {
-            brls::Logger::error("Could not edit exosphere.ini file.");
-            const auto dialog = new brls::Dialog("Failed to edit exosphere file! ProdInfo possibly won't be blanked on EmuNAND!!");
-            dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            if (!writeTextFile(newStringE ,"sdmc:/exosphere.ini"))
+            {
+                brls::Logger::error("Could not edit exosphere.ini file.");
+                const auto dialog = new brls::Dialog("Failed to edit exosphere file! ProdInfo possibly won't be blanked on EmuNAND!!");
+                dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            }
         }
     }
     if (!fs::exists("sdmc:/atmosphere/config/system_settings.ini"))
@@ -140,16 +151,28 @@ static bool patchSystem(const std::string& hostsContent, const bool patchSys)
 
     }else
     {
-        std::string newStringA = stringReplace(readTextFile("sdmc:/atmosphere/config/system_settings.ini"),
+        if (const std::string originalFileA = readTextFile("sdmc:/atmosphere/config/system_settings.ini"); originalFileA.empty())
+        {
+            if (!writeTextFile("[atmosphere]\nenable_dns_mitm = u8!0x1\nadd_defaults_to_dns_hosts = u8!0x1",
+                "sdmc:/atmosphere/config/system_settings.ini"))
+            {
+                brls::Logger::error("Could not make new system_settings.ini file.");
+                const auto dialog = new brls::Dialog("Failed to create atmosphere settings file! Hosts file probably won't work properly!");
+                dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            }
+        }else
+        {
+            std::string newStringA = stringReplace(originalFileA,
             "enable_dns_mitm = u8!0x0",
             "enable_dns_mitm = u8!0x1");
-        newStringA = stringReplace(newStringA, "add_defaults_to_dns_hosts = u8!0x0",
-            "add_defaults_to_dns_hosts = u8!0x1");
-        if (!writeTextFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
-        {
-            brls::Logger::error("Could not edit system_settings.ini file.");
-            const auto dialog = new brls::Dialog("Failed to edit atmosphere settings file! Hosts file probably won't work properly!");
-            dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            newStringA = stringReplace(newStringA, "add_defaults_to_dns_hosts = u8!0x0",
+                "add_defaults_to_dns_hosts = u8!0x1");
+            if (!writeTextFile(newStringA ,"sdmc:/atmosphere/config/system_settings.ini"))
+            {
+                brls::Logger::error("Could not edit system_settings.ini file.");
+                const auto dialog = new brls::Dialog("Failed to edit atmosphere settings file! Hosts file probably won't work properly!");
+                dialog->addButton("Ok", [](){}); dialog->open(); return false;
+            }
         }
     }
 
@@ -243,7 +266,7 @@ static bool applyNextendo()
 
 static bool handleS2Bcat(const bool remove)
 {
-    const std::string s2folder = "atmosphere/contents/01003BC0000A0000/romfs";
+    const std::string s2folder = "sdmc:/atmosphere/contents/01003BC0000A0000/romfs";
     if (remove)
     {
         deleteFolderRecursive(s2folder + "/DebugUnderPilot/bcat");
@@ -251,23 +274,23 @@ static bool handleS2Bcat(const bool remove)
         return true;
     }
     //Download and Extract BCAT file!!! Or error tf out if we can't.
-    if (!writeFileNet(getConfig("BCAT_IP", "s"), "/api/bcat/01003BC0000A0000", "switch/Epilogue/temp/tmpzip.zip"))
+    if (!writeFileNet(getConfig("BCAT_IP", "s"), "/api/bcat/01003BC0000A0000", "sdmc:/switch/Epilogue/temp/tmpzip.zip"))
     {
         brls::Logger::error("Failed to get BCAT file from network!");
         return false;
     }
-    if (!unZipFile("switch/Epilogue/temp/tmpzip.zip", "switch/Epilogue/temp/bcatextract"))
+    if (!unZipFile("sdmc:/switch/Epilogue/temp/tmpzip.zip", "sdmc:/switch/Epilogue/temp/bcatextract"))
     {
         brls::Logger::error("Failed to extract BCAT file!");
         return false;
     }
-    if (!copyFile("resources/nextendo/bcatdata/System/GameConfigSetting.xml", s2folder + "/System/GameConfigSetting.xml"))
+    if (!copyFile("romfs:/nextendo/bcatdata/System/GameConfigSetting.xml", s2folder + "/System/GameConfigSetting.xml"))
     {
         brls::Logger::error("Failed to copy System file!");
         return false;
     }
-    copyFolderRecursive("switch/Epilogue/temp/bcatextract", s2folder + "/DebugUnderPilot/bcat");
-    deleteFolderRecursive("switch/Epilogue/temp");
+    copyFolderRecursive("sdmc:/switch/Epilogue/temp/bcatextract", s2folder + "/DebugUnderPilot/bcat");
+    deleteFolderRecursive("sdmc:/switch/Epilogue/temp");
     brls::Logger::info("Successfuly applied S2 BCAT Patches!");
     return true;
 }

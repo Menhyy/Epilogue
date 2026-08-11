@@ -13,8 +13,8 @@
 
 namespace fs = std::filesystem;
 
-//static std::string epilogue_config_path = "sdmc:/switch/Epilogue/";
-static std::string epilogue_config_path = "switch/Epilogue/"; //For tests.
+static std::string epilogue_config_path = "sdmc:/switch/Epilogue/";
+//static std::string epilogue_config_path = "switch/Epilogue/"; //For tests.
 static std::string epilogue_config_file = "settings.json";
 static std::string full_path;
 static std::string default_file_path = "resources/settings_template.json";
