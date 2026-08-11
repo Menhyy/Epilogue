@@ -24,9 +24,6 @@ CaptionedImage::CaptionedImage()
     // The CaptionedImage instance basically becomes what's written in the XML
     this->inflateFromXMLRes("xml/views/captioned_image.xml");
 
-    // The label stays hidden until focused, so hide it right away
-    this->label->hide([] {});
-
     // Forward Image and Label XML attributes
     this->forwardXMLAttribute("scalingType", this->image);
     this->forwardXMLAttribute("image", this->image);
@@ -40,24 +37,6 @@ CaptionedImage::CaptionedImage()
     this->forwardXMLAttribute("caption", this->label, "text");
 
     this->addGestureRecognizer(new brls::TapGestureRecognizer(this, brls::TapGestureConfig(false, brls::SOUND_NONE, brls::SOUND_NONE, brls::SOUND_NONE)));
-}
-
-void CaptionedImage::onChildFocusGained(brls::View* directChild, brls::View* focusedView)
-{
-    // Called when a child of ours gets focused, in that case it's the Image
-
-    Box::onChildFocusGained(directChild, focusedView);
-
-    this->label->show([] {});
-}
-
-void CaptionedImage::onChildFocusLost(brls::View* directChild, brls::View* focusedView)
-{
-    // Called when a child of ours losts focused, in that case it's the Image
-
-    Box::onChildFocusLost(directChild, focusedView);
-
-    this->label->hide([] {});
 }
 
 brls::View* CaptionedImage::create()

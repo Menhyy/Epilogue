@@ -23,9 +23,6 @@ class CaptionedImage : public brls::Box
   public:
     CaptionedImage();
 
-    void onChildFocusGained(brls::View* directChild, brls::View* focusedView) override;
-    void onChildFocusLost(brls::View* directChild, brls::View* focusedView) override;
-
     static brls::View* create();
 
   private:

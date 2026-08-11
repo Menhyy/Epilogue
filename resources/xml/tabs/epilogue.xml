@@ -6,57 +6,61 @@
         width="auto"
         height="auto"
         grow="1.0" >
-
         <brls:Box
-            width="auto"
-            height="auto"
-            axis="column"
-            paddingLeft="@style/brls/tab_frame/content_padding_sides"
-            paddingRight="@style/brls/tab_frame/content_padding_sides"
-            paddingTop="@style/brls/tab_frame/content_padding_top_bottom"
-            paddingBottom="@style/brls/tab_frame/content_padding_top_bottom">
+                width="auto"
+                height="auto"
+                axis="column"
+                paddingLeft="@style/brls/tab_frame/content_padding_sides"
+                paddingRight="@style/brls/tab_frame/content_padding_sides"
+                paddingTop="@style/brls/tab_frame/content_padding_top_bottom"
+                paddingBottom="@style/brls/tab_frame/content_padding_top_bottom">
 
-                <!-- Buttons -->
-                <brls:Header
+            <!-- Buttons -->
+            <brls:Header
                     width="auto"
                     height="auto"
                     title="@i18n/demo/components/buttons_header"
                     marginBottom="30px" />
 
-                <brls:Box
+            <brls:Box
                     width="100%"
                     height="auto"
                     axis="row"
-                    marginBottom="30px">
-
-                    <brls:Button
+                    justifyContent="spaceBetween"
+                    marginBottom="30px"
+                    paddingLeft="50px"
+                    paddingRight="50px">
+                <CaptionedImage
                         id="button_primary"
                         width="auto"
                         height="auto"
-                        style="primary"
-                        grow="1.0"
-                        marginRight="30px"
-                        text="@i18n/demo/components/button_primary" />
+                        imageWidth="auto"
+                        imageHeight="auto"
+                        scalingType="center"
+                        image="@res/img/nextendo.png"
+                        caption="Apply Nextendo Patches"
+                        paddingRight="6" />
 
-                    <brls:Button
-                            id="button_net"
-                            width="auto"
-                            height="auto"
-                            style="primary"
-                            grow="1.0"
-                            marginRight="30px"
-                            text="@i18n/demo/components/button_net" />
+                <CaptionedImage
+                        id="button_net"
+                        width="auto"
+                        height="auto"
+                        imageWidth="auto"
+                        imageHeight="auto"
+                        image="@res/img/defaults.png"
+                        caption="Reset to Defaults/NSO"
+                        paddingRight="6" />
 
-                    <brls:Button
-                            id="button_placeholder"
-                            width="auto"
-                            height="auto"
-                            style="primary"
-                            grow="1.0"
-                            marginRight="30px"
-                            text="placeyholdery" />
+            </brls:Box>
 
-                </brls:Box>
+            <brls:Button
+                    id="button_placeholder"
+                    width="auto"
+                    height="auto"
+                    style="primary"
+                    grow="1.0"
+                    marginRight="30px"
+                    text="placeyholdery" />
 
         </brls:Box>
 

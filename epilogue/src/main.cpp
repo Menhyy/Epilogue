@@ -6,6 +6,7 @@
 #include <string>
 
 #include "activity/main_activity.hpp"
+#include "view/captioned_image.hpp"
 #include "tab/epilogue_main.hpp"
 #include "tab/settings_tab.hpp"
 #include "tools/configHandler.h"
@@ -49,6 +50,7 @@ int main(const int argc, char* argv[])
     // Register custom views (including tabs, which are views)
     brls::Application::registerXMLView("EpilogueMain", EpilogueMain::create);
     brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
+    brls::Application::registerXMLView("CaptionedImage", CaptionedImage::create);
 
     // Add custom values to the theme
     brls::Theme::getLightTheme().addColor("captioned_image/caption", nvgRGB(2, 176, 183));
